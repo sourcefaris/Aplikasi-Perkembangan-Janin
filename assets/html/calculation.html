@@ -1,0 +1,110 @@
+<script charset="utf-8" language="JavaScript1.2" type="text/javascript">
+
+function isValidDate(dateStr) {
+var datePat = /^(\d{1,2})(\/|-)(\d{1,2})\2(\d{4})$/;
+var matchArray = dateStr.match(datePat);
+if (matchArray == null) {
+alert("Format tanggal salah.")
+return false;
+}
+month = matchArray[1];
+day = matchArray[3];
+year = matchArray[4];
+if (month < 1 || month > 12) {
+alert("Bulan harus antara 1 dan 12.");
+return false;
+}
+if (day < 1 || day > 31) {
+alert("Tanggal harus antara 1 dan 31.");
+return false;
+}
+if ((month==4 || month==6 || month==9 || month==11) && day==31) {
+alert("Bulan "+month+" tidak sampai 31 hari!")
+return false;
+}
+if (month == 2) {
+var isleap = (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
+if (day>29 || (day==29 && !isleap)) {
+alert("Pebruari " + year + " tidak sampai " + day + " hari!");
+return false;
+   }
+}
+return true;
+}
+function dispDate(dateObj) {
+month = dateObj.getMonth()+1;
+month = (month < 10) ? "0" + month : month;
+day   = dateObj.getDate();
+day = (day < 10) ? "0" + day : day;
+year  = dateObj.getYear();
+if (year < 2000) year += 1900;
+return (day + " - " + month + " - " + year);
+}
+function pregnancyCalc(pregform) {
+menstrual = new Date();
+ovulation = new Date();
+duedate = new Date();
+tri1 = new Date();
+tri2 = new Date();
+tri3 = new Date();
+senam = new Date();
+siap = new Date();
+today = new Date();
+cycle = 0; 
+menstruasi = pregform.bulan.value + "/" + pregform.tanggal.value + "/" + pregform.tahun.value
+if (isValidDate(menstruasi)) {
+menstrualinput = new Date(menstruasi);
+menstrual.setTime(menstrualinput.getTime())
+}
+else return false;
+cycle = (pregform.cycle.value == "" ? 28 : pregform.cycle.value);
+if (pregform.cycle.value != "" && (pregform.cycle.value < 22 || pregform.cycle.value > 45)) {
+alert("Siklus haid terlalu pendek / terlalu panjang \n"
++ "Penghitungan mungkin tidak akurat, \n"
++ "walaupun demikian penghitungan tetap kami lakukan. ");
+}
+ovulation.setTime(menstrual.getTime() + (cycle*86400000) - (14*86400000));
+pregform.conception.value = dispDate(ovulation);
+duedate.setTime(ovulation.getTime() + 266*86400000);
+pregform.duedate.value = dispDate(duedate);
+// sets tri1 First Trimester ends 13 weeks + 3 days   ~   Second Trimester ends 26 weeks + 6 day
+tri1.setTime(menstrual.getTime());
+pregform.tri1.value = dispDate(tri1);
+// sets tri2 
+tri2.setTime(ovulation.getTime() + 81*86400000);
+pregform.tri2.value = dispDate(tri2);
+// sets tri3 
+tri3.setTime(ovulation.getTime() + 175*86400000);
+pregform.tri3.value = dispDate(tri3);
+// sets senam 
+senam.setTime(ovulation.getTime() + 126*86400000);
+pregform.senam.value = dispDate(senam);
+// sets siap
+siap.setTime(ovulation.getTime() + 245*86400000);
+pregform.siap.value = dispDate(siap);
+// sets usia kehamilan to 14 + 266 (pregnancy time) - time left
+var fetalage = 14 + 266 - ((duedate - today) / 86400000);
+weeks = parseInt(fetalage / 7); 
+days = Math.floor(fetalage % 7);
+fetalage = weeks + " minggu" + " " + days + " hari";
+pregform.fetalage.value = fetalage;
+return false;
+}
+</script> <form onsubmit="return pregnancyCalc(this);"><table border="1" bordercolor="#006699"><tbody>
+<tr>  <td>Hari Pertama Haid Terakhir<br />
+(HPHT)</td>   <td><input maxlength="5" name="tanggal" size="5" type="text" value="14" /> Tanggal (DD)<br />
+<input maxlength="5" name="bulan" size="5" type="text" value="3" /> Bulan (MM)<br />
+<input maxlength="5" name="tahun" size="5" type="text" value="2014" /> Tahun (YYYY)</td> </tr>
+<tr>  <td>Lama Siklus Haid Rata-rata<br />
+<i>Boleh tidak diisi</i></td>  <td><input maxlength="5" name="cycle" size="5" type="text" value="28" /> (22 - 45 hari)<br />
+*Umumnya 28 hari</td> </tr>
+<tr>  <td colspan="2"><div align="center"><input type="submit" value="H I T U N G"/>  </div></td> </tr>
+<tr>  <td>Perkiraan Pembuahan</td><td><input name="conception" size="20" type="text" value="" disabled="true"/></td> </tr>
+<tr>  <td>Perkiraan Usia Janin</td><td><input name="fetalage" size="20" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Perkiraan Siap Dilahirkan</td><td><input name="siap" size="20" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Perkiraan Tanggal Kelahiran</td><td><input name="duedate" size="20" style="background-color: #ffff66;" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Trimester Pertama</td><td><input name="tri1" size="20" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Trimester Kedua</td><td><input name="tri2" size="20" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Trimester Ketiga</td><td><input name="tri3" size="20" type="text" value="" disabled="true" /></td> </tr>
+<tr>  <td>Mulai Senam Hamil</td><td><input name="senam" size="20" type="text" value="" disabled="true" /></td> </tr>
+</tbody></table></form>

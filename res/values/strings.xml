@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Perkembangan Janin</string>
+    <string name="created_by">created by : Muhammad Faris Ashim</string>
+    <string name="contentDesc">Sistem Informasi untuk mengetahui perkembangan Janin</string>    
+
+</resources>
